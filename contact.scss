@@ -1,0 +1,343 @@
+@mixin sp-layout {
+  @media screen and (max-width: 750px) {
+    @content;
+  }
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 10000px;
+  background: radial-gradient(ellipse at bottom, #d3d4d4 0%, #fbfbfd 100%);
+  overflow: hidden;
+}
+
+@function random_range($min, $max) {
+  $rand: random();
+  $random_range: $min + floor($rand * (($max - $min) + 1));
+  @return $random_range;
+}
+
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  transform: rotate(-45deg);
+}
+
+.star {
+  $star-count: 50;
+  --star-color: var(--primary-color);
+  --star-tail-length: 6em;
+  --star-tail-height: 2px;
+  --star-width: calc(var(--star-tail-length) / 6);
+  --fall-duration: 9s;
+  --tail-fade-duration: var(--fall-duration);
+
+  position: absolute;
+  top: var(--top-offset);
+  left: 0;
+  width: var(--star-tail-length);
+  height: var(--star-tail-height);
+  color: var(--star-color);
+  background: linear-gradient(45deg, currentColor, transparent);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 6px currentColor);
+  transform: translate3d(104em, 0, 0);
+  animation: fall var(--fall-duration) var(--fall-delay) linear infinite,
+    tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite;
+
+  @include sp-layout {
+    // For mobile performance, tail-fade animation will be removed QAQ
+    animation: fall var(--fall-duration) var(--fall-delay) linear infinite;
+  }
+
+  @for $i from 1 through $star-count {
+    &:nth-child(#{$i}) {
+      --star-tail-length: #{random_range(500em, 750em) / 100};
+      --top-offset: #{random_range(0vh, 10000vh) / 100};
+      --fall-duration: #{random_range(6000, 12000s) / 1000};
+      --fall-delay: #{random_range(0, 10000s) / 1000};
+    }
+  }
+
+  &::before,
+  &::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: calc(var(--star-width) / -2);
+    width: var(--star-width);
+    height: 100%;
+    background: linear-gradient(45deg, transparent, currentColor, transparent);
+    border-radius: inherit;
+    animation: blink 2s linear infinite;
+  }
+
+  &::before {
+    transform: rotate(45deg);
+  }
+
+  &::after {
+    transform: rotate(-45deg);
+  }
+}
+
+@keyframes fall {
+  to {
+    transform: translate3d(-30em, 0, 0);
+  }
+}
+
+@keyframes tail-fade {
+  0%,
+  50% {
+    width: var(--star-tail-length);
+    opacity: 1;
+  }
+
+  70%,
+  80% {
+    width: 0;
+    opacity: 0.4;
+  }
+
+  100% {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.back-arrow {
+  position: absolute;
+  top: 3vh;
+  left: 2vw;
+  background-color: rgba($color: white, $alpha: 0.7);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  border-radius: 50%;
+  height: 10vh;
+  width: 5vw;
+  transition: transform 1.5s;
+}
+
+.back-arrow img {
+  rotate: -90deg;
+  width: 3vw;
+  margin-top: 20%;
+  margin-left: 20%;
+}
+
+.back-arrow:hover {
+  transform: scale(1.1);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.header-container {
+  border: none;
+  position: absolute;
+  display: grid;
+  top: 8%;
+  left: 10%;
+  min-height: 20vh;
+  min-width: 30vh;
+  height: 25vh;
+  width: 30vw;
+  background-color: rgba($color: white, $alpha: 0.7);
+  border-radius: 25px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.header-container h1 {
+  text-align: center;
+  color: black;
+  -webkit-text-stroke-color: wheat;
+  -webkit-text-stroke-width: 0.7px;
+  font-weight: bolder;
+  font-size: 7vh;
+}
+
+.resume {
+  border: none;
+  position: absolute;
+  display: grid;
+  top: 8%;
+  left: 70%;
+  min-height: 20vh;
+  min-width: 30vh;
+  height: 35vh;
+  width: 20vw;
+  background-color: rgba($color: white, $alpha: 1);
+  border-radius: 25px;
+  box-shadow: wheat 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  transition: transform 2s;
+}
+
+.resume h1 {
+  color: black;
+  font-size: 4vh;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 2s;
+}
+
+.res {
+  position: absolute;
+  height: 18vh;
+  left: 5.2vw;
+  top: 8vh;
+  transition: transform 2s;
+}
+
+.res:hover {
+  cursor: pointer;
+}
+
+.left-res {
+  transition: transform 2s;
+}
+
+.right-res {
+  transition: transform 2s;
+  height: 17vh;
+  left: 5.3vw;
+  top: 9.2vh;
+}
+
+.resume:hover {
+  .mid-res {
+    transform: scale(1.2);
+  }
+  .left-res {
+    transform: translateX(-3vw) rotate(-30deg);
+  }
+  .right-res {
+    transform: translateX(3vw) rotate(30deg) scale(1.1);
+  }
+  .invis-text {
+    opacity: 1;
+  }
+}
+
+.squig-container {
+  border: none;
+  position: absolute;
+  display: grid;
+  top: 0%;
+  left: 46.5%;
+  rotate: 80deg;
+}
+.squig-container img {
+  opacity: 0.7;
+  width: 18vw;
+}
+
+.squig2-container {
+  border: none;
+  position: absolute;
+  display: grid;
+  top: 20%;
+  left: 2%;
+  rotate: 85deg;
+}
+
+.squig2-container img {
+  opacity: 1;
+  width: 9vw;
+  rotate: 83deg;
+  height: 60vh;
+  transform: scaleY(-1);
+}
+
+.squig3-container {
+  border: none;
+  position: absolute;
+  display: grid;
+  top: 48%;
+  left: 68%;
+  rotate: 270deg;
+}
+.squig3-container img {
+  transform: scaleY(-1);
+}
+
+.socials-container {
+  border: none;
+  position: absolute;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  top: 60%;
+  left: 14%;
+  min-height: 20vh;
+  min-width: 30vh;
+  height: 30vh;
+  width: 50vw;
+  background-color: rgba($color: white, $alpha: 0.7);
+  border-radius: 25px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.social {
+  margin-top: 20%;
+  margin-left: 10%;
+  height: 18vh;
+  width: 8vw;
+  transition: transform 2s;
+}
+
+.social:hover {
+  cursor: pointer;
+  animation: shake 3s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+}

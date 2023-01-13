@@ -1,0 +1,355 @@
+@mixin sp-layout {
+    @media screen and (max-width: 750px) {
+        @content;
+    }
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    height: 10000px;
+    background: radial-gradient(ellipse at bottom, #d3d4d4 0%, #fbfbfd 100%);
+    overflow: hidden;
+}
+
+@function random_range($min, $max) {
+    $rand: random();
+    $random_range: $min +floor($rand * (($max - $min) + 1));
+    @return $random_range;
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%;
+    transform: rotate(-45deg);
+}
+
+.star {
+    $star-count: 50;
+    --star-color: var(--primary-color);
+    --star-tail-length: 6em;
+    --star-tail-height: 2px;
+    --star-width: calc(var(--star-tail-length) / 6);
+    --fall-duration: 9s;
+    --tail-fade-duration: var(--fall-duration);
+
+    position: absolute;
+    top: var(--top-offset);
+    left: 0;
+    width: var(--star-tail-length);
+    height: var(--star-tail-height);
+    color: var(--star-color);
+    background: linear-gradient(45deg, currentColor, transparent);
+    border-radius: 50%;
+    filter: drop-shadow(0 0 6px currentColor);
+    transform: translate3d(104em, 0, 0);
+    animation: fall var(--fall-duration) var(--fall-delay) linear infinite,
+        tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite;
+
+    @include sp-layout {
+        // For mobile performance, tail-fade animation will be removed QAQ
+        animation: fall var(--fall-duration) var(--fall-delay) linear infinite;
+    }
+
+    @for $i from 1 through $star-count {
+        &:nth-child(#{$i}) {
+            --star-tail-length: #{random_range(500em, 750em) / 100};
+            --top-offset: #{random_range(0vh, 10000vh) / 100};
+            --fall-duration: #{random_range(6000, 12000s) / 1000};
+            --fall-delay: #{random_range(0, 10000s) / 1000};
+        }
+    }
+
+    &::before,
+    &::after {
+        position: absolute;
+        content: "";
+        top: 0;
+        left: calc(var(--star-width) / -2);
+        width: var(--star-width);
+        height: 100%;
+        background: linear-gradient(45deg, transparent, currentColor, transparent);
+        border-radius: inherit;
+        animation: blink 2s linear infinite;
+    }
+
+    &::before {
+        transform: rotate(45deg);
+    }
+
+    &::after {
+        transform: rotate(-45deg);
+    }
+}
+
+@keyframes fall {
+    to {
+        transform: translate3d(-30em, 0, 0);
+    }
+}
+
+@keyframes tail-fade {
+
+    0%,
+    50% {
+        width: var(--star-tail-length);
+        opacity: 1;
+    }
+
+    70%,
+    80% {
+        width: 0;
+        opacity: 0.4;
+    }
+
+    100% {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.6;
+    }
+}
+.back-arrow{
+    position: absolute;
+    top: 3vh;
+    left: 2vw;
+    background-color: rgba($color: white, $alpha: 0.7);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    border-radius: 50%;
+    height: 10vh;
+    width: 5vw;
+    transition: transform 1.5s;
+}
+
+.back-arrow img {
+    rotate: -90deg;
+    width: 3vw;
+    margin-top: 20%;
+    margin-left: 20%;
+}
+
+.back-arrow:hover{
+    transform: scale(1.1);
+    opacity: 1;
+    cursor: pointer;
+}
+
+.header-container {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 8%;
+    left: 10%;
+    min-height: 20vh;
+    min-width: 30vh;
+    height: 25vh;
+    width: 30vw;
+    background-color: rgba($color: white, $alpha: 0.7);
+    border-radius: 25px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.header-container h1{
+    text-align: center;
+    color: black;
+    -webkit-text-stroke-color: wheat;
+    -webkit-text-stroke-width: .7px;
+    font-weight: bolder;
+    font-size: 7vh;
+}
+
+.info-container{
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 12%;
+    left: 60%;
+    min-height: 30vh;
+    min-width: 30vh;
+    height: 30vh;
+    width: 30vw;
+    background-color: rgba($color: white, $alpha: 0.7);
+    border-radius: 25px;
+    box-shadow: wheat 0px 50px 100px -20px, black 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.info-container h1{
+    color: black;
+    font-size: 4vh;
+    margin-left: 2vw;
+    
+}
+
+.info-container-2{
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 50%;
+    left: 5%;
+    min-height: 30vh;
+    min-width: 30vh;
+    height: 35vh;
+    width: 30vw;
+    background-color: rgba($color: white, $alpha: 0.7);
+    border-radius: 25px;
+    box-shadow: wheat 0px 50px 100px -20px, black 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+.language-header{
+    text-align: center;
+    color: black;
+    -webkit-text-stroke-color: wheat;
+    -webkit-text-stroke-width: .2px;
+    font-weight: bolder;
+}
+
+
+.icon-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    left: 20vw;
+}
+
+.icon{
+    height: 7vh;
+    width: 3vw;
+    margin-left: 2vw;
+    transition: transform 1s ease;
+}
+
+.icon:hover{
+    transform: scale(1.5);
+}
+
+
+
+.goals-container {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 55%;
+    left: 52%;
+    min-height: 30vh;
+    min-width: 30vh;
+    height: 40vh;
+    width: 40vw;
+    background-color: rgba($color: white, $alpha: 0.7);
+    border-radius: 25px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}   
+
+.goals{
+    position: absolute;
+    left: 4vw;
+    color: black;
+    -webkit-text-stroke-color: wheat;
+    -webkit-text-stroke-width: .2px;
+    font-weight: bolder;
+}
+
+.goals-list{
+    text-align: left;
+    position: absolute;
+    font-weight: bolder;
+    -webkit-text-stroke-color: white;
+    -webkit-text-stroke-width: 0px;
+    top: 10vh;
+    left: 6vw;
+    font-size: 3vh;
+}
+
+.goal-gif{
+    position: absolute;
+    height: 5vh;
+    width: 3vw;
+    border-radius: 50%;
+    top: 2vh;
+    left: 1vw;
+}
+
+
+.squig-container {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 33%;
+    left: 5%;
+    rotate: -18deg;
+}
+
+.squig-container img {
+    opacity: 1;
+    width: 7vw;
+    height: 14vh;
+}
+
+.squig-container-2 {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 7%;
+    left: 43%;
+}
+
+.squig-container-2 img {
+    opacity: .8;
+    width: 15vw;
+    height: 34vh;
+    rotate: 70deg;
+}
+
+.squig-container-3 {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 65%;
+    left: 40.75%;
+}
+
+.squig-container-3 img {
+    opacity: 1;
+    width: 5vw;
+    height: 31vh;
+    rotate: 100deg;
+}
+
+.squig-container-4 {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 45%;
+    left: 41.25%;
+}
+
+.squig-container-4 img {
+    opacity: .9;
+    width: 5vw;
+    height: 31vh;
+    rotate: -75deg;
+}
+
+.squig-container-5 {
+    border: none;
+    position: absolute;
+    display: grid;
+    top: 42%;
+    left: 87%;
+    
+}
+
+.squig-container-5 img {
+    opacity: 1;
+    width: 6vw;
+    height: 12vh;
+    rotate: 30deg;
+    transform: scaleX(-1);
+}
